@@ -19,5 +19,8 @@ RUN apt-get update && apt-get install -y \
 # Create CloudSQL socket dir (for /cloudsql path)
 RUN mkdir -p /cloudsql
 
-# Start Uvicorn directly (this is most stable for Cloud Run)
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Expose port Cloud Run expects
+EXPOSE 8080
+
+# Start Uvicorn on port 8080 (what Cloud Run expects)
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
