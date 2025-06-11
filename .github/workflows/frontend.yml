@@ -31,7 +31,7 @@ jobs:
         run: |
           docker buildx build --platform linux/amd64 \
             --tag europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_FRONTEND_REPO }}/frontend:latest \
-            --output=type=docker \
+            --push \
             ./frontend
           docker push europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_FRONTEND_REPO }}/frontend:latest
 
