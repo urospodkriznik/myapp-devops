@@ -16,3 +16,6 @@ dist/
 
 # Docker
 *.tar.gz
+
+frontend/.env
+frontend/.env.dev
