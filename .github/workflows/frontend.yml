@@ -21,41 +21,33 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Configure Docker
+      - name: Configure Docker Auth
         run: gcloud auth configure-docker europe-central2-docker.pkg.dev
 
-      - name: Debug Environment and Paths
+      - name: Set Up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Debug Secrets and Paths
         run: |
-          set -x
-          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-          echo "Secrets:"
           echo "GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}"
           echo "GCP_FRONTEND_REPO=${{ secrets.GCP_FRONTEND_REPO }}"
           echo "GCP_FRONTEND_SERVICE=${{ secrets.GCP_FRONTEND_SERVICE }}"
           echo "GCP_REGION=${{ secrets.GCP_REGION }}"
-          echo "Current Directory:"
-          pwd
-          echo "Contents of ./frontend:"
-          ls -la ./frontend
+          echo "Workspace:"
+          ls -la $GITHUB_WORKSPACE
+          echo "Frontend folder:"
+          ls -la $GITHUB_WORKSPACE/frontend
 
-      - name: Reset Docker builder to legacy
+      - name: Build & Push Docker Image
         run: |
-          docker buildx stop || true
-          docker buildx rm default || true
-
-      - name: Build Docker Image
-        run: |
-          set -x
-          docker build -t europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_FRONTEND_REPO }}/frontend:latest ./frontend
-
-      - name: Push Docker Image
-        run: |
-          set -x
-          docker push europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_FRONTEND_REPO }}/frontend:latest
+          docker buildx build \
+            --platform linux/amd64 \
+            --tag europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_FRONTEND_REPO }}/frontend:latest \
+            --push \
+            ./frontend
 
       - name: Deploy to Cloud Run
         run: |
-          set -x
           gcloud run deploy ${{ secrets.GCP_FRONTEND_SERVICE }} \
             --image europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_FRONTEND_REPO }}/frontend:latest \
             --platform managed \
