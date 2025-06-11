@@ -2,8 +2,14 @@
 FROM node:20-alpine AS build
 
 WORKDIR /app
+
+# Set backend URL as build arg and expose to Vite
+ARG VITE_BACKEND_URL
+ENV VITE_BACKEND_URL=${VITE_BACKEND_URL}
+
 COPY package.json package-lock.json ./
 RUN npm ci
+
 COPY . .
 RUN npm run build
 

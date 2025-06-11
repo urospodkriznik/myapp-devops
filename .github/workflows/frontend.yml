@@ -31,6 +31,7 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/amd64 \
+            --build-arg VITE_BACKEND_URL=${{ secrets.FRONTEND_BACKEND_URL }} \
             --tag europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_FRONTEND_REPO }}/frontend:latest \
             --push \
             ./frontend
