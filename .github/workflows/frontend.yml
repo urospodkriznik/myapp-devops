@@ -29,8 +29,14 @@ jobs:
           echo "GCP_FRONTEND_SERVICE=${{ secrets.GCP_FRONTEND_SERVICE }}"
           echo "GCP_REGION=${{ secrets.GCP_REGION }}"
 
-      - run: docker buildx build --platform linux/amd64 --tag europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_FRONTEND_REPO }}/frontend:latest --push ./frontend
-
+      - run: |
+          cd $GITHUB_WORKSPACE
+          ls -la ./frontend
+          docker buildx build --platform linux/amd64 \
+            --tag europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_FRONTEND_REPO }}/frontend:latest \
+            --push \
+            ./frontend
+            
       - run: |
           gcloud run deploy ${{ secrets.GCP_FRONTEND_SERVICE }} \
             --image europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_FRONTEND_REPO }}/frontend:latest \
