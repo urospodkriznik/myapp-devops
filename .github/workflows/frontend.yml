@@ -21,28 +21,36 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Configure Docker Auth
+      - name: Configure Docker
         run: gcloud auth configure-docker europe-central2-docker.pkg.dev
 
-      - name: Debug Info
+      - name: Debug Environment and Paths
         run: |
+          set -x
+          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          echo "Secrets:"
           echo "GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}"
           echo "GCP_FRONTEND_REPO=${{ secrets.GCP_FRONTEND_REPO }}"
           echo "GCP_FRONTEND_SERVICE=${{ secrets.GCP_FRONTEND_SERVICE }}"
           echo "GCP_REGION=${{ secrets.GCP_REGION }}"
-          echo "Workspace:"
-          ls -la $GITHUB_WORKSPACE
-          echo "Frontend:"
-          ls -la $GITHUB_WORKSPACE/frontend
+          echo "Current Directory:"
+          pwd
+          echo "Contents of ./frontend:"
+          ls -la ./frontend
 
       - name: Build Docker Image
-        run: docker build -t europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_FRONTEND_REPO }}/frontend:latest ./frontend
+        run: |
+          set -x
+          docker build -t europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_FRONTEND_REPO }}/frontend:latest ./frontend
 
       - name: Push Docker Image
-        run: docker push europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_FRONTEND_REPO }}/frontend:latest
+        run: |
+          set -x
+          docker push europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_FRONTEND_REPO }}/frontend:latest
 
       - name: Deploy to Cloud Run
         run: |
+          set -x
           gcloud run deploy ${{ secrets.GCP_FRONTEND_SERVICE }} \
             --image europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_FRONTEND_REPO }}/frontend:latest \
             --platform managed \
