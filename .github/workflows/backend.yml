@@ -37,10 +37,7 @@ jobs:
       - name: Build & push image
         run: |
           set -e
-          docker buildx build --platform linux/amd64 \
-            --tag europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_BACKEND_REPO }}/backend:latest \
-            --push \
-            ./backend
+          docker buildx build --platform linux/amd64 --tag europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_BACKEND_REPO }}/backend:latest --push ./backend
 
       - name: Deploy to Cloud Run
         run: |
