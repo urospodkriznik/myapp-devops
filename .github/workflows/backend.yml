@@ -27,9 +27,7 @@ jobs:
       - name: Build & push image
         run: |
           export DOCKER_BUILDKIT=0
-          docker build --platform linux/amd64 \
-            -t europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_BACKEND_REPO }}/backend:latest \
-            ./backend
+          docker build --platform linux/amd64 -t europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_BACKEND_REPO }}/backend:latest ./backend
           docker push europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_BACKEND_REPO }}/backend:latest
 
       - name: Deploy to Cloud Run
