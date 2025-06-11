@@ -14,7 +14,10 @@ app = FastAPI()
 # CORS settings
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # frontend dev server
+    allow_origins=[
+        "http://localhost:5173",
+        "https://myapp-frontend-813539597684.europe-central2.run.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -22,28 +25,34 @@ app.add_middleware(
 
 REQUEST_COUNT = Counter("http_requests_total", "Total HTTP Requests")
 
+
 @app.middleware("http")
 async def count_requests(request, call_next):
     REQUEST_COUNT.inc()
     return await call_next(request)
+
 
 @app.get("/metrics")
 def metrics():
     data = generate_latest()
     return Response(content=data, media_type=CONTENT_TYPE_LATEST)
 
+
 # Dependency
 async def get_session() -> AsyncSession:
     async with SessionLocal() as session:
         yield session
 
+
 # USERS
+
 
 @app.get("/users")
 async def read_users(session: AsyncSession = Depends(get_session)):
     result = await session.execute(select(User))
     users = result.scalars().all()
     return [{"id": u.id, "name": u.name, "email": u.email} for u in users]
+
 
 @app.post("/users")
 async def create_user(user: UserCreate, session: AsyncSession = Depends(get_session)):
@@ -52,6 +61,7 @@ async def create_user(user: UserCreate, session: AsyncSession = Depends(get_sess
     await session.commit()
     await session.refresh(new_user)
     return {"id": new_user.id, "name": new_user.name, "email": new_user.email}
+
 
 @app.delete("/users/{user_id}")
 async def delete_user(user_id: int, session: AsyncSession = Depends(get_session)):
@@ -63,13 +73,24 @@ async def delete_user(user_id: int, session: AsyncSession = Depends(get_session)
     await session.commit()
     return {"ok": True}
 
+
 # ITEMS
+
 
 @app.get("/items")
 async def get_items(session: AsyncSession = Depends(get_session)):
     result = await session.execute(select(Item))
     items = result.scalars().all()
-    return [{"id": item.id, "name": item.name, "description": item.description, "price": item.price} for item in items]
+    return [
+        {
+            "id": item.id,
+            "name": item.name,
+            "description": item.description,
+            "price": item.price,
+        }
+        for item in items
+    ]
+
 
 @app.post("/items")
 async def create_item(item: ItemCreate, session: AsyncSession = Depends(get_session)):
@@ -77,7 +98,13 @@ async def create_item(item: ItemCreate, session: AsyncSession = Depends(get_sess
     session.add(new_item)
     await session.commit()
     await session.refresh(new_item)
-    return {"id": new_item.id, "name": new_item.name, "description": new_item.description, "price": new_item.price}
+    return {
+        "id": new_item.id,
+        "name": new_item.name,
+        "description": new_item.description,
+        "price": new_item.price,
+    }
+
 
 @app.delete("/items/{item_id}")
 async def delete_item(item_id: int, session: AsyncSession = Depends(get_session)):

@@ -96,3 +96,19 @@ migrate-prod:
 		-v $(PWD)/backend:/app \
 		europe-central2-docker.pkg.dev/myapp-devops/myapp-backend-repo/backend:latest \
 		alembic upgrade head
+
+
+# FRONTEND TARGETS
+build-frontend:
+	docker build --platform linux/amd64 -f frontend/Dockerfile -t europe-central2-docker.pkg.dev/myapp-devops/myapp-frontend-repo/frontend:latest ./frontend
+
+push-frontend:
+	docker push europe-central2-docker.pkg.dev/myapp-devops/myapp-frontend-repo/frontend:latest
+
+deploy-frontend:
+	gcloud run deploy myapp-frontend \
+		--image europe-central2-docker.pkg.dev/myapp-devops/myapp-frontend-repo/frontend:latest \
+		--platform managed \
+		--region europe-central2 \
+		--allow-unauthenticated \
+		--port 80
