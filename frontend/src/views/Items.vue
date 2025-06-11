@@ -11,7 +11,7 @@
     <ul>
       <li v-for="item in items" :key="item.id">
         {{ item.name }} - {{ item.description }} - {{ item.price }}
-        <button @click="deleteItem(item.id)">Delete</button>
+        <button @click="deleteItem(item.id)">Delete</button> 
       </li>
     </ul>
   </div>
