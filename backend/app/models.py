@@ -8,6 +8,8 @@ class User(Base):
     name = Column(String(50))
     email = Column(String(100), unique=True)
     type = Column(Integer)
+    type2 = Column(Integer)
+    
     
 class Item(Base):
     __tablename__ = "items"
