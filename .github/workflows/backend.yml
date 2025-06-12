@@ -16,6 +16,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Write GCP SA Key to file
+        run: echo "${{ secrets.GCP_SA_KEY }}" > gcp-key.json
+
+      - name: Set GOOGLE_APPLICATION_CREDENTIALS
+        run: echo "GOOGLE_APPLICATION_CREDENTIALS=${{ github.workspace }}/gcp-key.json" >> $GITHUB_ENV
+
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
         with:
@@ -27,24 +33,13 @@ jobs:
       - name: Set Up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Debug image path
+      - name: Start Cloud SQL Proxy
         run: |
-          echo "Project ID: ${{ secrets.GCP_PROJECT_ID }}"
-          echo "Backend Repo: ${{ secrets.GCP_BACKEND_REPO }}"
-          echo "Image: europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_BACKEND_REPO }}/backend:latest"
-
-      - name: Validate secrets
-        run: |
-          test -n "${{ secrets.GCP_PROJECT_ID }}" || (echo "Missing GCP_PROJECT_ID" && exit 1)
-          test -n "${{ secrets.GCP_BACKEND_REPO }}" || (echo "Missing GCP_BACKEND_REPO" && exit 1)
-
-      - name: Debug secrets
-        run: |
-          echo "DB_HOST=[$DB_HOST]"
-          echo "DB_PORT=[$DB_PORT]"
-          echo "DB_NAME=[$DB_NAME]"
-          echo "DB_USER=[$DB_USER]"
-          echo "DB_PASSWORD=[$DB_PASSWORD]"
+          curl -sSLo cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.9.1/cloud-sql-proxy.linux.amd64
+          chmod +x cloud-sql-proxy
+          ./cloud-sql-proxy --credentials-file=gcp-key.json \
+            --port=5432 ${{ secrets.DB_INSTANCE_CONNECTION_NAME }} &
+          sleep 5
 
       - name: Build & Push Docker Image
         run: |
@@ -56,11 +51,9 @@ jobs:
 
       - name: Run Alembic migrations
         env:
-          DATABASE_URL: postgresql+asyncpg://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ secrets.DB_NAME }}
+          DATABASE_URL: postgresql+psycopg2://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@127.0.0.1:5432/${{ secrets.DB_NAME }}
           IMAGE: europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_BACKEND_REPO }}/backend:latest
         run: |
-          echo "IMAGE length: ${#IMAGE}"
-          echo "DATABASE_URL length: ${#DATABASE_URL}"
           echo "Running Alembic on $IMAGE"
           docker run --rm \
             -e DATABASE_URL="$DATABASE_URL" \
