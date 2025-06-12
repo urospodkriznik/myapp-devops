@@ -51,7 +51,7 @@ jobs:
 
       - name: Run Alembic migrations
         env:
-          DATABASE_URL: postgresql+psycopg2://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@127.0.0.1:5432/${{ secrets.DB_NAME }}
+          DATABASE_URL: postgresql+asyncpg://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@127.0.0.1:5432/${{ secrets.DB_NAME }}
           IMAGE: europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_BACKEND_REPO }}/backend:latest
         run: |
           echo "Running Alembic on $IMAGE"
