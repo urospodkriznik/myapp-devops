@@ -38,6 +38,14 @@ jobs:
           test -n "${{ secrets.GCP_PROJECT_ID }}" || (echo "Missing GCP_PROJECT_ID" && exit 1)
           test -n "${{ secrets.GCP_BACKEND_REPO }}" || (echo "Missing GCP_BACKEND_REPO" && exit 1)
 
+      - name: Debug secrets
+        run: |
+          echo "DB_HOST=[$DB_HOST]"
+          echo "DB_PORT=[$DB_PORT]"
+          echo "DB_NAME=[$DB_NAME]"
+          echo "DB_USER=[$DB_USER]"
+          echo "DB_PASSWORD=[$DB_PASSWORD]"
+
       - name: Build & Push Docker Image
         run: |
           docker buildx build \
