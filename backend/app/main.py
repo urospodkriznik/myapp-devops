@@ -32,7 +32,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-REQUEST_COUNT = Counter("http_requests_total", "Total HTTP Requests")
+REQUEST_COUNT = Counter("http_requests_total", "Total HTTP Requests") 
 
 
 @app.middleware("http")
