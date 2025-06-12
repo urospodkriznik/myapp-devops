@@ -11,14 +11,18 @@ from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
 from starlette.responses import Response
 from alembic.config import Config
 from alembic import command
+import asyncio
+import threading
 
 app = FastAPI()
 
 @app.on_event("startup")
 def run_migrations():
-    print("Running migrations...")
-    config = Config(os.path.join(os.path.dirname(__file__), "alembic.ini"))
-    command.upgrade(config, "head")
+    def _run():
+        print("Running migrations...")
+        config = Config(os.path.join(os.path.dirname(__file__), "alembic.ini"))
+        command.upgrade(config, "head")
+    threading.Thread(target=_run).start()
 
 # CORS settings
 app.add_middleware(
@@ -32,7 +36,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-REQUEST_COUNT = Counter("http_requests_total", "Total HTTP Requests") 
+REQUEST_COUNT = Counter("http_requests_total", "Total HTTP Requests")
 
 
 @app.middleware("http")
@@ -123,4 +127,8 @@ async def delete_item(item_id: int, session: AsyncSession = Depends(get_session)
         raise HTTPException(status_code=404, detail="Item not found")
     await session.delete(item)
     await session.commit()
+    return {"ok": True}
+
+@app.get("/healthz")
+def health_check():
     return {"ok": True}
