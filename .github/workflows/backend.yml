@@ -16,7 +16,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Write GCP SA Key to file
+      - name: Write GCP SA Key to File
         run: echo "${{ secrets.GCP_SA_KEY }}" > gcp-key.json
 
       - name: Set GOOGLE_APPLICATION_CREDENTIALS
@@ -35,38 +35,45 @@ jobs:
 
       - name: Start Cloud SQL Proxy
         run: |
+          echo "Downloading Cloud SQL Proxy..."
           curl -sSLo cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.9.1/cloud-sql-proxy.linux.amd64
           chmod +x cloud-sql-proxy
+          echo "Starting Cloud SQL Proxy for instance: ${{ secrets.DB_INSTANCE_CONNECTION_NAME }}"
           ./cloud-sql-proxy --credentials-file=gcp-key.json \
             --port=5432 ${{ secrets.DB_INSTANCE_CONNECTION_NAME }} &
-          sleep 5
-
-      - name: Set up Python & Install Requirements
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-venv
-          python3 -m venv venv
-          source venv/bin/activate
-          pip install -r backend/requirements.txt
-
-      - name: Run Alembic migrations
-        env:
-          DATABASE_URL: postgresql+asyncpg://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@127.0.0.1:5432/${{ secrets.DB_NAME }}
-        run: |
-          source venv/bin/activate
-          cd backend
-          alembic upgrade head
+          for i in {1..15}; do
+            nc -z 127.0.0.1 5432 && echo "Cloud SQL Proxy is ready" && break
+            echo "Waiting for Cloud SQL Proxy on 127.0.0.1:5432..."
+            sleep 1
+          done
+          netstat -an | grep 5432 || echo "Port 5432 not open"
 
       - name: Build & Push Docker Image
         run: |
+          echo "Building Docker image..."
           docker buildx build \
             --platform linux/amd64 \
             --tag europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_BACKEND_REPO }}/backend:latest \
             --push \
             ./backend
 
+      - name: Run Alembic migrations
+        env:
+          DATABASE_URL: postgresql+asyncpg://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@127.0.0.1:5432/${{ secrets.DB_NAME }}
+          IMAGE: europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_BACKEND_REPO }}/backend:latest
+        run: |
+          echo "DATABASE_URL: $DATABASE_URL"
+          echo "Using image: $IMAGE"
+          echo "Running Alembic upgrade..."
+          docker run --rm \
+            -e DATABASE_URL="$DATABASE_URL" \
+            -w /app \
+            "$IMAGE" \
+            alembic upgrade head || { echo "Alembic failed"; exit 1; }
+
       - name: Deploy to Cloud Run
         run: |
+          echo "Deploying to Cloud Run..."
           gcloud run deploy ${{ secrets.GCP_BACKEND_SERVICE }} \
             --image europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_BACKEND_REPO }}/backend:latest \
             --platform managed \
