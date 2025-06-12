@@ -11,18 +11,14 @@ from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
 from starlette.responses import Response
 from alembic.config import Config
 from alembic import command
-import asyncio
-import threading
 
 app = FastAPI()
 
 @app.on_event("startup")
 def run_migrations():
-    def _run():
-        print("Running migrations...")
-        config = Config(os.path.join(os.path.dirname(__file__), "alembic.ini"))
-        command.upgrade(config, "head")
-    threading.Thread(target=_run).start()
+    print("Running migrations...")
+    config = Config(os.path.join(os.path.dirname(__file__), "alembic.ini"))
+    command.upgrade(config, "head")
 
 # CORS settings
 app.add_middleware(
