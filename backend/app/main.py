@@ -16,9 +16,12 @@ app = FastAPI()
 
 @app.on_event("startup")
 def run_migrations():
-    print("Running migrations...")
-    config = Config(os.path.join(os.path.dirname(__file__), "alembic.ini"))
-    command.upgrade(config, "head")
+    try:
+        print("Running migrations...")
+        config = Config("alembic.ini")
+        command.upgrade(config, "head")
+    except Exception as e:
+        print(f"Migration failed: {e}")
 
 # CORS settings
 app.add_middleware(

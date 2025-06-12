@@ -7,9 +7,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(50))
     email = Column(String(100), unique=True)
-    type = Column(Integer)
-    type2 = Column(Integer)
-    
+    type3 = Column(Integer)
     
 class Item(Base):
     __tablename__ = "items"
