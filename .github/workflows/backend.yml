@@ -27,6 +27,17 @@ jobs:
       - name: Set Up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Debug image path
+        run: |
+          echo "Project ID: ${{ secrets.GCP_PROJECT_ID }}"
+          echo "Backend Repo: ${{ secrets.GCP_BACKEND_REPO }}"
+          echo "Image: europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_BACKEND_REPO }}/backend:latest"
+
+      - name: Validate secrets
+        run: |
+          test -n "${{ secrets.GCP_PROJECT_ID }}" || (echo "Missing GCP_PROJECT_ID" && exit 1)
+          test -n "${{ secrets.GCP_BACKEND_REPO }}" || (echo "Missing GCP_BACKEND_REPO" && exit 1)
+
       - name: Build & Push Docker Image
         run: |
           docker buildx build \
