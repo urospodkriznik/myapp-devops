@@ -8,23 +8,20 @@ from alembic import context
 from app.db import Base
 import app.models
 
-# Load DATABASE_URL from env
+# Load and convert URL
 DATABASE_URL = os.getenv("DATABASE_URL")
-# Convert asyncpg to psycopg2
 SQLALCHEMY_URL = DATABASE_URL.replace("asyncpg", "psycopg2")
 
 # Alembic config
 config = context.config
 fileConfig(config.config_file_name)
-# Set URL into alembic config (this is the correct way!)
 config.set_main_option("sqlalchemy.url", SQLALCHEMY_URL)
 
 target_metadata = Base.metadata
 
 def run_migrations_offline():
-    url = config.get_main_option("sqlalchemy.url")
     context.configure(
-        url=url,
+        url=SQLALCHEMY_URL,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -33,8 +30,7 @@ def run_migrations_offline():
         context.run_migrations()
 
 def run_migrations_online():
-    url = config.get_main_option("sqlalchemy.url")
-    connectable = create_engine(url, future=True)
+    connectable = create_engine(SQLALCHEMY_URL, future=True)
 
     with connectable.connect() as connection:
         context.configure(

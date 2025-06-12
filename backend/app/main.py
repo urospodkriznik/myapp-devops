@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -8,8 +9,16 @@ from app.models import User, Item
 from app.schemas import UserCreate, ItemCreate
 from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
 from starlette.responses import Response
+from alembic.config import Config
+from alembic import command
 
 app = FastAPI()
+
+@app.on_event("startup")
+def run_migrations():
+    print("Running migrations...")
+    config = Config(os.path.join(os.path.dirname(__file__), "alembic.ini"))
+    command.upgrade(config, "head")
 
 # CORS settings
 app.add_middleware(
