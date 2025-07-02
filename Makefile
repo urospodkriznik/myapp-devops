@@ -32,6 +32,13 @@ logs-dev:
 
 # === MIGRATIONS ===
 
+alembic-rev:
+	@if [ -z "$(m)" ]; then \
+		echo "Message is not set. Use: make alembic-rev m='message'"; \
+		exit 1; \
+	fi
+	alembic revision --autogenerate -m "$(m)"
+
 # Create new Alembic migration script from model changes
 makemigrations-dev:
 	$(COMPOSE_DEV) exec backend alembic revision --autogenerate -m "auto"
