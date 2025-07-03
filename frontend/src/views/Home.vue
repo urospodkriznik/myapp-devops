@@ -14,8 +14,7 @@
             </p>
             
             <p class="text-medium-emphasis">
-              This is a full-stack application demonstrating modern DevOps practices, 
-              security hardening, and monitoring capabilities.
+              Full-stack demo app with FastAPI backend and Vue 3 frontend, showcasing DevOps, security, and monitoring practices as a technology proof of concept.
             </p>
           </v-card-text>
         </v-card>
@@ -64,6 +63,54 @@
               prepend-icon="mdi-arrow-right"
             >
               Go to Users
+            </v-btn>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-row class="mt-4">
+      <v-col cols="12" md="6">
+        <v-card class="pa-4" elevation="2">
+          <v-card-title class="d-flex align-center">
+            <v-icon icon="mdi-view-dashboard" class="mr-2" />
+            Dashboard
+          </v-card-title>
+          
+          <v-card-text>
+            <p class="text-body-2 text-medium-emphasis mb-3">
+              Simple dashboard with some charts and tables.
+            </p>
+            
+            <v-btn 
+              color="primary" 
+              to="/dashboard"
+              prepend-icon="mdi-arrow-right"
+            >
+              Go to Dashboard
+            </v-btn>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col cols="12" md="6">
+        <v-card class="pa-4" elevation="2">
+          <v-card-title class="d-flex align-center">
+            <v-icon icon="mdi-chart-line" class="mr-2" />
+            TradingView Charts
+          </v-card-title>
+          
+          <v-card-text>
+            <p class="text-body-2 text-medium-emphasis mb-3">
+              Compare TradingView charts of your favorite pairs.
+            </p>
+            
+            <v-btn 
+              color="primary" 
+              to="/crypto-favorites"
+              prepend-icon="mdi-arrow-right"
+            >
+              Go to TradingView Charts
             </v-btn>
           </v-card-text>
         </v-card>

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 import Home from '@/views/Home.vue'
 import Users from '@/views/Users.vue'
 import Items from '@/views/Items.vue'
@@ -6,11 +7,17 @@ import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
 import { useAuthStore } from '@/stores/auth'
 
-const routes = [
-  { 
-    path: '/', 
-    component: Home,
+const routes: RouteRecordRaw[] = [
+  {
+    path: '/',
+    name: 'Home',
+    component: () => import('../views/Home.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: () => import('../views/Dashboard.vue')
   },
   { 
     path: '/users', 
@@ -31,6 +38,11 @@ const routes = [
     path: '/register', 
     component: Register,
     meta: { requiresGuest: true }
+  },
+  {
+    path: '/crypto-favorites',
+    name: 'CryptoFavorites',
+    component: () => import('../views/CryptoFavorites.vue')
   }
 ]
 
@@ -57,7 +69,6 @@ router.beforeEach(async (to, from, next) => {
     next('/login')
     return
   }
-  console.log(auth.user);
   
   // Check if route requires admin access
   if (to.meta.requiresAdmin && auth.user?.role !== 'ADMIN') {

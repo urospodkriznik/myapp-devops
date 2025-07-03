@@ -14,19 +14,11 @@
       <div class="d-none d-md-flex">
         <v-btn 
           text 
-          to="/items" 
+          to="/" 
           v-if="auth.user"
-          prepend-icon="mdi-package-variant"
+          prepend-icon="mdi-home"
         >
-          Items
-        </v-btn>
-        <v-btn 
-          text 
-          to="/users" 
-          v-if="auth.user"
-          prepend-icon="mdi-account-group"
-        >
-          Users
+          Home
         </v-btn>
         <v-btn 
           text 
@@ -95,19 +87,11 @@
         <v-divider />
         
         <v-list-item 
-          to="/items" 
+          to="/" 
           v-if="auth.user"
-          prepend-icon="mdi-package-variant"
+          prepend-icon="mdi-home"
         >
-          <v-list-item-title>Items</v-list-item-title>
-        </v-list-item>
-        
-        <v-list-item 
-          to="/users" 
-          v-if="auth.user"
-          prepend-icon="mdi-account-group"
-        >
-          <v-list-item-title>Users</v-list-item-title>
+          <v-list-item-title>Homw</v-list-item-title>
         </v-list-item>
         
         <v-list-item 

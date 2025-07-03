@@ -3,6 +3,8 @@ import App from './App.vue'
 import router from './router'
 import { createPinia } from 'pinia'
 import piniaPersist from 'pinia-plugin-persistedstate'
+import VueECharts from 'vue-echarts'
+import 'echarts';
 
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
@@ -23,6 +25,7 @@ const app = createApp(App)
 app.use(pinia)
 app.use(router)
 app.use(vuetify)
+app.component('v-chart', VueECharts)
 
 axios.defaults.withCredentials = true
 
