@@ -178,11 +178,6 @@ This document outlines the security measures implemented in the MyApp DevOps pro
 4. **Recovery**: Restore normal operations
 5. **Post-Incident**: Document lessons learned
 
-### Contact Information
-- **Security Team**: security@yourcompany.com
-- **Emergency Contact**: +1-XXX-XXX-XXXX
-- **Escalation Path**: CTO → CEO
-
 ## Compliance
 
 ### Data Protection
@@ -196,21 +191,6 @@ This document outlines the security measures implemented in the MyApp DevOps pro
 - **Change Logs**: Configuration change tracking
 - **Security Events**: Security incident logging
 - **Compliance Reports**: Regular compliance reporting
-
-## Future Enhancements
-
-### Planned Security Features
-- **Rate Limiting**: API rate limiting implementation
-- **API Key Management**: API key authentication
-- **Two-Factor Authentication**: 2FA for sensitive operations
-- **Advanced Monitoring**: SIEM integration
-- **Automated Security Testing**: CI/CD security scanning
-
-### Security Roadmap
-- **Q1**: Rate limiting implementation
-- **Q2**: API key management
-- **Q3**: Advanced monitoring
-- **Q4**: Security automation
 
 ## Resources
 
@@ -228,6 +208,6 @@ This document outlines the security measures implemented in the MyApp DevOps pro
 
 ---
 
-**Last Updated**: December 2024  
+**Last Updated**: July 2025  
 **Version**: 1.0  
-**Maintainer**: DevOps Team 
+**Maintainer**: Uroš Podkrižnik

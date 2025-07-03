@@ -338,6 +338,6 @@ allow_sign_up = false
 
 ---
 
-**Last Updated**: December 2024  
+**Last Updated**: July 2025
 **Version**: 1.0  
-**Maintainer**: DevOps Team 
+**Maintainer**: Uroš podkrižnik 

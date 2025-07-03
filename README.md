@@ -1,43 +1,90 @@
-# MyApp DevOps - Full Stack Application
+# MyApp DevOps – Full Stack Application
 
-A comprehensive full-stack application demonstrating modern DevOps practices, security hardening, and monitoring capabilities.
+A modern, production-ready full-stack application demonstrating advanced DevOps, security, and monitoring practices. This project showcases expertise in building scalable, secure, and observable systems using FastAPI, Vue 3, and a robust cloud-native toolchain. Designed to meet the standards of professional software teams, it is ready for real-world deployment and extensibility.
 
-## 🚀 Features
+---
 
-- **FastAPI Backend** with JWT authentication and role-based access control
-- **Vue.js Frontend** with TypeScript
-- **PostgreSQL Database** with migrations
-- **Docker Containerization** with health checks
-- **Security Hardening** with security headers, CORS, and HTTPS enforcement
-- **Monitoring & Observability** with Loguru, Prometheus, and Grafana
+## 🚀 Project Overview
+
+This application exemplifies:
+- **End-to-end full stack development** with FastAPI (Python) and Vue 3 (TypeScript)
+- **Enterprise-grade DevOps workflows** including CI/CD, Docker, and cloud deployment
+- **Comprehensive security and monitoring** for production environments
+- **Clean, maintainable code** and modern development practices
+
+---
+
+## 🏆 Key Features
+
+- **FastAPI Backend**
+  - Secure JWT authentication and refresh tokens
+  - Role-based access control (Admin/User)
+  - User registration, login, and management
+  - Hardened API endpoints with input validation and password hashing
+  - Structured logging (Loguru), Prometheus metrics, and health checks
+  - Database migrations (Alembic) and environment-based configuration
+
+- **Vue 3 + TypeScript Frontend**
+  - Modern, responsive UI with Vuetify
+  - Authentication flows and protected routes
+  - Role-based UI and CRUD operations
+  - Seamless integration with backend API
+  - Automated testing (Vitest) and linting (ESLint)
+
+- **DevOps & CI/CD**
+  - Fully containerized stack (Docker, Docker Compose)
+  - Automated build, test, and deployment pipelines (GitHub Actions, GCP Cloud Run)
+  - Health checks and environment management
+  - Makefile for streamlined developer operations
+
+- **Monitoring & Observability**
+  - Prometheus metrics and custom application monitoring
+  - Grafana dashboards for real-time insights
+  - Loguru for structured, actionable logs
+
+- **Security**
+  - Industry best practices: HTTPS, security headers, secret management, environment separation, and production hardening
+  - Detailed [Security Documentation](SECURITY.md)
+
+- **Testing**
+  - Backend: pytest
+  - Frontend: Vitest
+
+- **Documentation**
+  - Clear setup, security, monitoring, and environment configuration guides
+
+---
 
 ## 🏗️ Architecture
 
 ```
-Frontend (Vue.js) ↔ Backend (FastAPI) ↔ Database (PostgreSQL)
+Frontend (Vue 3) ↔ Backend (FastAPI) ↔ Database (PostgreSQL)
                            ↓
                     Monitoring Stack
                     (Prometheus + Grafana)
 ```
 
-## 🚀 Quick Start
+---
 
-### 1. Clone and Setup
+## ⚡ Development Quick Start
+
+### 1. Backend, Database, and Monitoring (Dev Mode)
+Start all backend services, database, and monitoring stack using Docker Compose (dev configuration):
+
 ```bash
-git clone https://github.com/your-username/myapp-devops.git
-cd myapp-devops
-cp env.template .env
-# Edit .env with your configuration
+make dev
 ```
+- This will launch the FastAPI backend, PostgreSQL database, Prometheus, and Grafana using `docker-compose.dev.yml`.
 
-### 2. Start Application
+### 2. Frontend (Dev Mode)
+The frontend is developed and run separately for optimal developer experience:
+
 ```bash
-# Main application
-docker-compose up -d
-
-# Monitoring stack (optional)
-docker-compose -f docker-compose.monitoring.yml up -d
+cd frontend
+npm install
+npm run dev
 ```
+- This starts the Vue 3 development server with hot reload at http://localhost:5173
 
 ### 3. Access Services
 - **Frontend**: http://localhost:5173
@@ -46,37 +93,37 @@ docker-compose -f docker-compose.monitoring.yml up -d
 - **Grafana**: http://localhost:3001 (admin/admin)
 - **Prometheus**: http://localhost:9090
 
-## 🔒 Security Features
+---
 
-- JWT authentication with access/refresh tokens
-- Role-based access control (Admin/User)
-- Security headers (XSS, CSRF protection)
-- CORS configuration
-- HTTPS enforcement in production
-- Environment-based secret management
-
-## 📊 Monitoring
-
-- **Structured Logging**: Loguru with rotation
-- **Metrics**: Prometheus endpoint with custom metrics
-- **Dashboards**: Grafana with real-time monitoring
-- **Health Checks**: Application and container monitoring
-
-## 📚 Documentation
-
-- [Security Documentation](SECURITY.md)
-- [Monitoring Documentation](MONITORING.md)
-- [Environment Template](env.template)
-
-## 🐳 Docker Services
-
+## 🐳 Services
 - `backend`: FastAPI application
+- `frontend`: Vue 3 application
 - `db`: PostgreSQL database
 - `prometheus`: Metrics collection
 - `grafana`: Monitoring dashboards
 
-## 🧪 Testing
+---
 
+## 🔒 Security Highlights
+- JWT authentication and refresh tokens
+- Role-based access control (Admin/User)
+- Security headers, CORS, HTTPS enforcement
+- Environment-based secret management
+- Input validation and password hashing (bcrypt)
+- See [SECURITY.md](SECURITY.md) for full details
+
+---
+
+## 📊 Monitoring & Observability
+- Structured logging (Loguru, rotation)
+- Prometheus metrics endpoint (`/metrics`)
+- Grafana dashboards (real-time monitoring)
+- Health checks for application and containers
+- See [MONITORING.md](MONITORING.md) for full details
+
+---
+
+## 🧪 Testing
 ```bash
 # Backend tests
 cd backend && pytest
@@ -85,33 +132,33 @@ cd backend && pytest
 cd frontend && npm test
 ```
 
-## 📈 Monitoring Usage
+---
 
-```bash
-# View logs
-docker-compose logs -f backend
-
-# Check metrics
-curl http://localhost:8000/metrics
-
-# Health check
-curl http://localhost:8000/healthz
-```
-
-## 🔧 Development
-
-1. Create feature branch
-2. Implement changes with tests
-3. Update documentation
-4. Submit pull request
-
-## 🚀 Production Deployment
-
-1. Configure production environment variables
-2. Set up SSL certificates
-3. Configure monitoring and alerting
-4. Deploy with Docker Compose or Kubernetes
+## ⚙️ DevOps & CI/CD
+- **Dockerized**: All services containerized for consistency and portability
+- **Docker Compose**: Local orchestration for full stack
+- **GitHub Actions**: CI/CD pipelines for build, push, and deploy (GCP Cloud Run)
+- **Makefile**: Build and deploy automation
+- **Health checks**: Docker and application level
 
 ---
 
-**Built with modern DevOps practices** | **Version**: 1.0.0 
+## 🛠️ Development Workflow
+1. Create a feature branch
+2. Implement changes with tests
+3. Update documentation
+4. Submit a pull request
+
+---
+
+## 📚 Documentation
+- [Security Documentation](SECURITY.md)
+- [Monitoring Documentation](MONITORING.md)
+- [Environment Template](env.template)
+- API docs: http://localhost:8000/docs
+
+---
+
+Developed by Uroš Podrkižnik.
+
+**Built with modern DevOps practices | Version: 1.0.0** 
